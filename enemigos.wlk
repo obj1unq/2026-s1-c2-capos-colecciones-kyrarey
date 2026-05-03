@@ -1,15 +1,19 @@
 import capos.*
 
 object erethia {
-    const enemigos = [caterina, archibaldo, astra]
+    const enemigos = #{caterina, archibaldo, astra}
 
     method enemigos() = enemigos
+
+    method esPoderoso(personaje) = self.enemigos().all({ e => personaje.puedeVencer(e) })
 }
 
 //2.3
 object caterina {
     var morada = fortalezaDeAcero
-    const poderBase = 28
+    const poder = 28
+
+    method poder() = poder
 
     method morada() =  morada
 
@@ -26,7 +30,9 @@ object fortalezaDeAcero {
 
 object archibaldo {
     var morada = palacioDeMarmol
-    const poderBase = 16
+    const poder = 16
+
+    method poder() = poder
 
     method morada() = morada
 
@@ -44,7 +50,9 @@ object palacioDeMarmol {
 
 object astra {
     var morada = torreDeMarfil
-    const poderBase = 14
+    const poder = 14
+
+    method poder() = poder
 
     method morada() = morada
 
@@ -57,9 +65,4 @@ object torreDeMarfil {
     var dueño = astra
 
     method dueño() = dueño
-
-    // method conquistarMorada(nuevoDueño) {
-    //     dueño.morada(null) //se queda sin morada --> no es necesario
-    //     dueño = nuevoDueño
-    // }
 }

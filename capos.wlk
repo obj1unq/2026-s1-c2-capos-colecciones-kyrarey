@@ -3,9 +3,9 @@ import enemigos.*
 
 
 object rolando {
-    const artefactosEnMochila = []
+    const artefactosEnMochila = #{}
     const historialDeEncuentros = []
-    var tamañoMochila = 0
+    var tamañoMochila = 2
     var morada = castilloDePiedra
     var poderBase = 5
 
@@ -25,6 +25,8 @@ object rolando {
         morada = lugar
     }
 
+    method irAMorada() = morada.almacenarObjetos(self)
+
     method historialDeEncuentros() = historialDeEncuentros
 
     method poderConArtefactos() = poderBase + self.sumatoriaPoderDeArtefactos()
@@ -33,7 +35,7 @@ object rolando {
 
     method artefactosEnMochila() = artefactosEnMochila
 
-    method recolectarObjeto(artefacto) { 
+    method encontrarObjeto(artefacto) {
         historialDeEncuentros.add(artefacto) //lo añade aunque no lo recolecte
         if (self.esCapacidadSuficiente()) {
             artefactosEnMochila.add(artefacto)
@@ -41,20 +43,20 @@ object rolando {
     }
 
     method eliminarObjeto(artefacto) {
-        if (self.tieneArtefacto(artefacto)) {
-            artefactosEnMochila.remove(artefacto)
-        }
+        artefactosEnMochila.remove(artefacto)
     }
 
+    //libro de hechizos
     method tieneArtefacto(artefactoABuscar) = artefactosEnMochila.contains(artefactoABuscar)
-    //artefactosEnMochila.contains({artefacto => artefacto == artefactoABuscar})
-    
-    method esCapacidadSuficiente() = (tamañoMochila > artefactosEnMochila.size()) 
+
+    method poderInvocado() = morada.poderInvocado(self)
+
+    method esCapacidadSuficiente() = (tamañoMochila > artefactosEnMochila.size())
     //self.error ("rolando no tiene la capacidad suficiente")
 
     method cantidadArtefactos() = artefactosEnMochila.size()
 
-    method artefactosTotales() = artefactosEnMochila.union(morada.artefactos())
+    method posesiones() = artefactosEnMochila + morada.artefactos()
 
     method batallar() {
         self.poderBase (self.poderBase() + 1 ) //despues de batallar su poder base aumenta
@@ -66,26 +68,34 @@ object rolando {
 
     method puedeConquistarMorada(moradaDeEnemigo) = self.puedeVencer(moradaDeEnemigo.dueño())
 
-    //method artefactoMasPoderosoDeLaMochila() = morada.artefactoMasPoderoso(self)
+    //method artefactoMasPoderosoEnMorada() = morada.artefactoMasPoderoso(self)
 
     //2.4 poderoso
-    method esPoderosoEnErethia() = erethia.enemigos().all({ e => self.puedeVencer(e) })
+    method esPoderoso(pais) = pais.esPoderoso(self)
 
     //2.5 artefacto fatal
-    method tieneUnArtefactoFatal(enemigo) = artefactosEnMochila.find({ a => ( a.poder(self) > enemigo.poderBase())}) 
+    method tieneUnArtefactoFatal(enemigo) = artefactosEnMochila.any({ a => a.poder(self) > enemigo.poder()})
 }
 
 object castilloDePiedra {
-    const artefactos = [] //conjunto
-    const dueño = rolando
+    const artefactos = #{}
 
     method artefactos() = artefactos
 
     method artefactoMasPoderoso(personaje) = artefactos.max({ a => a.poder(personaje) })
 
-    method almacenarObjeto(artefacto) {
-        dueño.eliminarObjeto(artefacto)
-        artefactos.add(artefacto)
+    method almacenarObjetos(personaje) {
+        artefactos.addAll(personaje.artefactosEnMochila())
+        personaje.artefactosEnMochila().clear()
+    }
+
+    method poderInvocado(personaje) {
+        if (artefactos.isEmpty() ) {
+            return 0
+        }
+        else {
+            self.artefactoMasPoderoso(personaje).poder(personaje)
+        }
     }
 }
 

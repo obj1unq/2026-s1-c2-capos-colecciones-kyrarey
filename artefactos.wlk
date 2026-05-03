@@ -1,3 +1,5 @@
+// artefactos.wlk
+// artefactos.wlk
 //2.1
 object espadaDelDestino {
     var vecesUsada = 0
@@ -27,20 +29,16 @@ object collarDivino {
 }
 
 object armaduraDeAceroValyrio {
-    var vecesUsada = 0
     const poder = 6
 
-    method usarArtefacto() {
-        vecesUsada += 1
-    }
+    method usarArtefacto() {}
 
     method poder(personaje) = poder
 }
 
 //2.2
 object libroDeHechizos {
-    const hechizos = []
-    var vecesUsada = 0
+    const hechizos = [] 
 
     method hechizos() = hechizos
 
@@ -49,7 +47,6 @@ object libroDeHechizos {
     }
 
     method usarArtefacto() {
-        vecesUsada += 1
         hechizos.remove(hechizos.head())
     }
 
@@ -70,13 +67,11 @@ object bendicion {
 }
 
 object invisibilidad {
-    method poder(personaje) {
-        return personaje.poderBase()
-    }
+    method poder(personaje) = personaje.poderBase()
 }
 
 object invocacion {
     method poder(personaje) {
-        personaje.vivienda().artefactoMasPoderoso(personaje).poder(personaje) //debe haber una forma mejor
+        personaje.poderInvocado()
     }
 }
